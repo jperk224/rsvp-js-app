@@ -1,8 +1,43 @@
 // const global references
 const FORM = document.getElementById('registrar');
 const INPUT = FORM.querySelector('input');  // return the first input tag in the form
-
+const MAIN_DIV = document.querySelector('.main');
 const UL = document.getElementById('invitedList');  // declared globally so its available in all functions
+
+// constants needed to add the filter checkbox to the UI via JS; this was part of the exercise
+// TODO: refactor this to use more HTML/CSS
+const FILTER_DIV = document.createElement('div');
+const FILTER_LABEL = document.createElement('label');
+const FILTER_CHECKBOX = document.createElement('input');
+
+FILTER_LABEL.textContent = "Hide those who haven't responded";
+FILTER_CHECKBOX.type = 'checkbox';
+FILTER_DIV.appendChild(FILTER_LABEL);
+FILTER_DIV.appendChild(FILTER_CHECKBOX);
+MAIN_DIV.insertBefore(FILTER_DIV, UL);
+
+// filter checkbox event listener to filter confirmed respondents
+FILTER_CHECKBOX.addEventListener('change', function(e) {
+    const IS_CHECKED = FILTER_CHECKBOX.checked;            // true/false based on checkbox state
+    const LIS = UL.children;
+
+    if (IS_CHECKED) {
+        // traverse each LI and hide the non-confirmed cases
+        for (let i = 0; i < LIS.length; i++) {
+            let li = LIS[i];
+            if (li.className === 'responded') {
+                li.style.display = '';  // empty string allows it to pick up previous style
+            } else {
+                li.style.display = 'none';
+            }
+        }
+    } else {
+        for (let i = 0; i < LIS.length; i++) {
+            let li = LIS[i];
+            li.style.display = '';      // display all lis
+        }
+    }
+});
 
 // Create an LI and return it to be appended to a ul
 function createLI(text) {
@@ -47,12 +82,12 @@ FORM.addEventListener('submit', function(e) {   // a shorthand arrow funciton co
 // uses checkbox change event- we're focused on whether the state of the checkbox has changed
 UL.addEventListener('change', function(e) {
     const CHECKBOX = e.target;
-    const CHECKED = CHECKBOX.checked;           // true/false based on checkbox state
+    const IS_CHECKED = CHECKBOX.checked;           // true/false based on checkbox state
     // traverse the DOM to the checkbox's grandparent element, the LI to manipulate it
     const LIST_ITEM = CHECKBOX.parentNode.parentNode;
 
     // if the box is checked, add the 'responded' class
-    if (CHECKED) {
+    if (IS_CHECKED) {
         LIST_ITEM.className = 'responded';
     } else {
         LIST_ITEM.className = '';
@@ -67,6 +102,7 @@ UL.addEventListener('click', function(e) {
         const BUTTON = e.target;
         const LI = BUTTON.parentNode;
         const UL = LI.parentNode;
+
         if(BUTTON.textContent === 'Remove') {
             UL.removeChild(LI);
         } else if (BUTTON.textContent === 'Edit') {
