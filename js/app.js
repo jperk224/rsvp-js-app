@@ -81,6 +81,15 @@ UL.addEventListener('click', function(e) {
             LI.removeChild(SPAN);
             // change the 'edit' to a 'save' button
             BUTTON.textContent = 'Save';
+        } else if (BUTTON.textContent === 'Save') {
+            const INPUT = LI.querySelector('input');
+            const SPAN = document.createElement('span');
+            SPAN.textContent = INPUT.value;
+            // add the span element in front of the input and remove the input
+            LI.insertBefore(SPAN, INPUT);
+            LI.removeChild(INPUT);
+            // change the 'save' to an 'edit' button
+            BUTTON.textContent = 'Edit';
         }
     }
 });
